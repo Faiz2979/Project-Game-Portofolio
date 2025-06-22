@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,13 +7,17 @@ public class PlayerController : MonoBehaviour
 {
     private PlayerControls playerControls;
     private InputAction move;
+    private Animator animator;
 
     private Rigidbody rb;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float maxSpeed = 5f;
+    [SerializeField] public float maxSpeed = 5f;
+
+    [SerializeField] private float dashSpeed = 10f;
+    [SerializeField] private float dashDuration = 0.2f;
 
     private Vector3 forceDirection = Vector3.zero;
 
@@ -38,6 +43,7 @@ public class PlayerController : MonoBehaviour
     {
         playerControls = new PlayerControls();
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -45,18 +51,54 @@ public class PlayerController : MonoBehaviour
         playerControls.Player.Enable();
         move = playerControls.Player.Move;
         playerControls.Player.Jump.performed += OnJump;
+        playerControls.Player.ToggleMouseLock.performed += ToggleMouseLock;
+        playerControls.Player.Dash.performed += OnDash;
+
     }
+
 
     private void OnDisable()
     {
         playerControls.Player.Disable();
         playerControls.Player.Jump.performed -= OnJump;
+        playerControls.Player.Dash.performed -= OnDash;
+        playerControls.Player.ToggleMouseLock.performed -= ToggleMouseLock;
     }
 
     private void Update()
     {
         if (IsGrounded())
             lastGroundedTime = Time.time;
+
+        AnimatorController();
+    }
+
+    private void ToggleMouseLock(InputAction.CallbackContext context)
+    {
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+
+    private void OnDash(InputAction.CallbackContext context)
+    {
+        if (IsGrounded() && rb.velocity.magnitude > 0.1f)
+        {
+            Vector3 dashDirection = rb.velocity.normalized * dashSpeed; // Dash speed is defined by dashSpeed
+            rb.AddForce(dashDirection, ForceMode.Impulse);
+            Debug.Log("Dash performed!");
+        }
+        else
+        {
+            Debug.Log("Dash blocked: not grounded or insufficient velocity");
+        }
     }
 
     private void FixedUpdate()
@@ -80,7 +122,7 @@ public class PlayerController : MonoBehaviour
             Vector3 clamped = horizontalVelocity.normalized * maxSpeed;
             rb.velocity = new Vector3(clamped.x, rb.velocity.y, clamped.z);
         }
-        
+
         // Stop small movements
         if (rb.velocity.magnitude < 0.01f)
         {
@@ -106,19 +148,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool IsGrounded()
+    public bool IsGrounded()
     {
-        return Physics.Raycast(groundCheckPoint.position, Vector3.down, groundCheckRadius, groundLayer);
+        // Perform 3 raycasts: center, left, and right
+        Vector3 origin = groundCheckPoint.position;
+        Vector3 left = origin + groundCheckPoint.right * groundCheckRadius * 0.5f;
+        Vector3 right = origin - groundCheckPoint.right * groundCheckRadius * 0.5f;
+
+        bool centerHit = Physics.Raycast(origin, Vector3.down, groundCheckRadius, groundLayer);
+        bool leftHit = Physics.Raycast(left, Vector3.down, groundCheckRadius, groundLayer);
+        bool rightHit = Physics.Raycast(right, Vector3.down, groundCheckRadius, groundLayer);
+
+        return centerHit || leftHit || rightHit;
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        if (groundCheckPoint != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(groundCheckPoint.position, groundCheckPoint.position + Vector3.down * groundCheckRadius);
-        }
-    }
+
 
     private Vector3 GetCameraRight(Camera playerCamera)
     {
@@ -146,6 +190,19 @@ public class PlayerController : MonoBehaviour
         return forward.normalized; // Return the component for movement
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheckPoint != null)
+        {
+            Gizmos.color = Color.green;
+            Vector3 origin = groundCheckPoint.position;
+            Vector3 left = origin + groundCheckPoint.right * groundCheckRadius * 0.5f;
+            Vector3 right = origin - groundCheckPoint.right * groundCheckRadius * 0.5f;
+            Gizmos.DrawLine(groundCheckPoint.position, groundCheckPoint.position + Vector3.down * groundCheckRadius);
+            Gizmos.DrawLine(left, left + Vector3.down * groundCheckRadius);
+            Gizmos.DrawLine(right, right + Vector3.down * groundCheckRadius);
+        }
+    }
 
     private void LookAt()
     {
@@ -159,8 +216,17 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            rb.rotation = Quaternion.Slerp(rb.rotation, Quaternion.identity, Time.deltaTime * 10f);
+            // rb.rotation = Quaternion.Slerp(rb.rotation, Quaternion.identity, Time.deltaTime * 10f);
             rb.angularVelocity = Vector3.zero;
         }
     }
+
+    private void AnimatorController()
+    {
+        animator.SetFloat("Speed", rb.velocity.magnitude / maxSpeed);
+        animator.SetBool("isGrounded", IsGrounded());
+        animator.SetFloat("verticalVelocity", rb.velocity.y);
+
+    }
+
 }
