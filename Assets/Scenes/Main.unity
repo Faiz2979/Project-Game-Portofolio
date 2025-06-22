@@ -349,7 +349,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.00023064726, y: 0.83849216, z: -0.54491353, w: 0.00035491123}
-  m_LocalPosition: {x: -0.0016930916, y: 6, z: 1.9999995}
+  m_LocalPosition: {x: -0.0016930903, y: 6, z: 1.9999995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -468,7 +468,7 @@ MonoBehaviour:
   m_XAxis:
     Value: 0
     m_SpeedMode: 0
-    m_MaxSpeed: 100
+    m_MaxSpeed: 500
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X
@@ -1234,8 +1234,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912226866}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.000000082457426, y: 5.3219984e-11, z: -1.7804624e-10, w: 1}
-  m_LocalPosition: {x: -4.8908166e-10, y: -0.0000008472707, z: 0.00000014524659}
+  m_LocalRotation: {x: 6.3282712e-15, y: -0.000000006940082, z: 0.000000015651992,
+    w: 1}
+  m_LocalPosition: {x: 3.099826e-11, y: -0.00000021786977, z: -0.000000096831}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1344,8 +1345,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1531016950}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.000000007008338, y: -0.0000008472657, z: 0.00000014524886}
+  m_LocalRotation: {x: -0.03632502, y: 0.000000013096822, z: -0.000000026739365, w: 0.99934006}
+  m_LocalPosition: {x: 3.099826e-11, y: -0.00000021786977, z: -0.000000096831}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1550,8 +1551,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1720472911}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.018189546, y: 8.892881e-11, z: -1.5093647e-10, w: 0.9998346}
-  m_LocalPosition: {x: -4.8908166e-10, y: -0.0000008472707, z: 0.00000014524659}
+  m_LocalRotation: {x: -0.018189598, y: 0.00000001769129, z: -0.00000003790483, w: 0.9998346}
+  m_LocalPosition: {x: 3.099826e-11, y: -0.00000021786977, z: -0.000000096831}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2819,6 +2820,8 @@ MonoBehaviour:
   maxSpeed: 5
   dashSpeed: 10
   dashDuration: 0.2
+  dashCooldown: 1
+  dashTimer: 0
   playerCamera: {fileID: 330585545}
   groundLayer:
     serializedVersion: 2

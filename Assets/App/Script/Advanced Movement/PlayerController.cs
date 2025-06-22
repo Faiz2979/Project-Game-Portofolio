@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     private PlayerControls playerControls;
     private InputAction move;
     private Animator animator;
-
     private Rigidbody rb;
 
     [Header("Movement Settings")]
@@ -16,9 +15,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] public float maxSpeed = 5f;
 
+    [Header("Dash Settings")]
     [SerializeField] private float dashSpeed = 10f;
     [SerializeField] private float dashDuration = 0.2f;
-
+    [SerializeField] private float dashCooldown = 1f;
+    [SerializeField] private float dashTimer = 0f;
+    private bool isDashing = false;
     private Vector3 forceDirection = Vector3.zero;
 
     [Tooltip("Camera used to determine movement direction based on camera orientation.")]
@@ -53,9 +55,7 @@ public class PlayerController : MonoBehaviour
         playerControls.Player.Jump.performed += OnJump;
         playerControls.Player.ToggleMouseLock.performed += ToggleMouseLock;
         playerControls.Player.Dash.performed += OnDash;
-
     }
-
 
     private void OnDisable()
     {
@@ -70,7 +70,101 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded())
             lastGroundedTime = Time.time;
 
+        else
+        {
+            float initialGravity = Physics.gravity.y;
+            Physics.gravity = new Vector3(0, -9.81f, 0);
+            rb.AddForce(Vector3.up * initialGravity, ForceMode.Acceleration);
+        }
+
+        dashTimer -= Time.deltaTime;
         AnimatorController();
+    }
+
+    private void FixedUpdate(){
+        Vector2 input = move.ReadValue<Vector2>();
+        forceDirection = input.x * GetCameraRight(playerCamera) * moveSpeed;
+        forceDirection += input.y * GetCameraForward(playerCamera) * moveSpeed;
+
+        rb.AddForce(forceDirection, ForceMode.VelocityChange);
+        forceDirection = Vector3.zero;
+
+        Vector3 horizontalVelocity = rb.velocity;
+        horizontalVelocity.y = 0f;
+
+        // Optional better gravity
+        if (rb.velocity.y < 0f)
+            rb.velocity += Vector3.up * Physics.gravity.y * Time.fixedDeltaTime;
+
+        // Clamp speed only if not dashing
+        if (!isDashing && horizontalVelocity.sqrMagnitude > maxSpeed * maxSpeed)
+        {
+            Vector3 clamped = horizontalVelocity.normalized * maxSpeed;
+            rb.velocity = new Vector3(clamped.x, rb.velocity.y, clamped.z);
+        }
+
+        if (rb.velocity.magnitude < 0.01f)
+            rb.velocity = Vector3.zero;
+
+        LookAt();
+
+        // Prevent rotation from physics
+        rb.angularVelocity = Vector3.zero;
+    }
+
+    private void OnJump(InputAction.CallbackContext context)
+    {
+        bool canJump = (Time.time - lastGroundedTime <= coyoteTime) &&
+                       (Time.time - lastJumpTime >= jumpCooldown);
+
+        if (canJump)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            lastJumpTime = Time.time;
+        }
+        else
+        {
+            Debug.Log("Jump blocked: not grounded or on cooldown");
+        }
+    }
+
+    private void OnDash(InputAction.CallbackContext context)
+    {
+        if (isDashing || dashTimer > 0) return;
+        dashTimer = dashCooldown;
+        Vector2 input = move.ReadValue<Vector2>();
+        if (input.sqrMagnitude < 0.1f)
+        {
+            Debug.Log("Dash blocked: no movement input");
+            return;
+        }
+
+        Vector3 dashDirection = input.x * GetCameraRight(playerCamera) + input.y * GetCameraForward(playerCamera);
+        dashDirection.Normalize();
+
+        StartCoroutine(DashCoroutine(dashDirection));
+    }
+
+    private IEnumerator DashCoroutine(Vector3 direction)
+    {
+        isDashing = true;
+        rb.velocity = direction * dashSpeed;
+        Debug.Log("Dash performed!");
+        yield return new WaitForSeconds(dashDuration);
+        isDashing = false;
+    }
+
+    public bool IsGrounded()
+    {
+        Vector3 origin = groundCheckPoint.position;
+        Vector3 left = origin + groundCheckPoint.right * groundCheckRadius * 0.5f;
+        Vector3 right = origin - groundCheckPoint.right * groundCheckRadius * 0.5f;
+
+        bool centerHit = Physics.Raycast(origin, Vector3.down, groundCheckRadius, groundLayer);
+        bool leftHit = Physics.Raycast(left, Vector3.down, groundCheckRadius, groundLayer);
+        bool rightHit = Physics.Raycast(right, Vector3.down, groundCheckRadius, groundLayer);
+
+        return centerHit || leftHit || rightHit;
     }
 
     private void ToggleMouseLock(InputAction.CallbackContext context)
@@ -87,133 +181,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-private void OnDash(InputAction.CallbackContext context){
-
-    Vector2 input = move.ReadValue<Vector2>();
-
-    // Cegah dash jika tidak ada input arah
-    if (input.sqrMagnitude < 0.1f)
-    {
-        Debug.Log("Dash blocked: no movement input");
-        return;
-    }
-
-    // Hitung arah dash dari input dan kamera
-    Vector3 dashDirection = input.x * GetCameraRight(playerCamera) + input.y * GetCameraForward(playerCamera);
-    Debug.Log("Dash direction: " + dashDirection);
-    dashDirection.Normalize();
-
-    // Terapkan gaya dash
-    rb.velocity = dashDirection * dashSpeed;
-    Debug.Log("Dash performed!");
-}
-
-    private void FixedUpdate()
-    {
-        Vector2 input = move.ReadValue<Vector2>();
-        forceDirection = input.x * GetCameraRight(playerCamera) * moveSpeed;
-        forceDirection += input.y * GetCameraForward(playerCamera) * moveSpeed;
-
-        rb.AddForce(forceDirection, ForceMode.VelocityChange);
-
-        Vector3 horizontalVelocity = rb.velocity;
-        forceDirection = Vector3.zero;
-
-        // Optional better gravity
-        if (rb.velocity.y < 0f)
-            rb.velocity += Vector3.up * Physics.gravity.y * Time.fixedDeltaTime;
-
-        // Clamp max horizontal speed
-        if (horizontalVelocity.sqrMagnitude > maxSpeed * maxSpeed)
-        {
-            Vector3 clamped = horizontalVelocity.normalized * maxSpeed;
-            rb.velocity = new Vector3(clamped.x, rb.velocity.y, clamped.z);
-        }
-
-        // Stop small movements
-        if (rb.velocity.magnitude < 0.01f)
-        {
-            rb.velocity = Vector3.zero;
-        }
-        LookAt();
-
-        rb.angularVelocity = Vector3.zero; // Prevent rotation from physics
-    }
-
-    private void OnJump(InputAction.CallbackContext context)
-    {
-        bool canJump =
-            (Time.time - lastGroundedTime <= coyoteTime) &&
-            (Time.time - lastJumpTime >= jumpCooldown);
-
-        if (canJump)
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            lastJumpTime = Time.time;
-        }
-        else
-        {
-            Debug.Log("Jump blocked: not grounded or on cooldown");
-        }
-    }
-
-    public bool IsGrounded()
-    {
-        // Perform 3 raycasts: center, left, and right
-        Vector3 origin = groundCheckPoint.position;
-        Vector3 left = origin + groundCheckPoint.right * groundCheckRadius * 0.5f;
-        Vector3 right = origin - groundCheckPoint.right * groundCheckRadius * 0.5f;
-
-        bool centerHit = Physics.Raycast(origin, Vector3.down, groundCheckRadius, groundLayer);
-        bool leftHit = Physics.Raycast(left, Vector3.down, groundCheckRadius, groundLayer);
-        bool rightHit = Physics.Raycast(right, Vector3.down, groundCheckRadius, groundLayer);
-
-        return centerHit || leftHit || rightHit;
-    }
-
-
-
     private Vector3 GetCameraRight(Camera playerCamera)
     {
-        if (playerCamera == null)
-        {
-            throw new ArgumentNullException(nameof(playerCamera), "Player camera is not assigned.");
-        }
-
-        // Get the right direction of the camera
         Vector3 right = playerCamera.transform.right;
-        right.y = 0; // Ignore vertical component
-        return right.normalized; // Return the component for movement
+        right.y = 0;
+        return right.normalized;
     }
 
     private Vector3 GetCameraForward(Camera playerCamera)
     {
-        if (playerCamera == null)
-        {
-            throw new ArgumentNullException(nameof(playerCamera), "Player camera is not assigned.");
-        }
-
-        // Get the forward direction of the camera
         Vector3 forward = playerCamera.transform.forward;
-        forward.y = 0; // Ignore vertical component
-        return forward.normalized; // Return the component for movement
+        forward.y = 0;
+        return forward.normalized;
     }
 
-    private void OnDrawGizmosSelected()
+    private void LookAt()
     {
-        if (groundCheckPoint != null)
-        {
-            Gizmos.color = Color.green;
-            Vector3 origin = groundCheckPoint.position;
-            Vector3 left = origin + groundCheckPoint.right * groundCheckRadius * 0.5f;
-            Vector3 right = origin - groundCheckPoint.right * groundCheckRadius * 0.5f;
-            Gizmos.DrawLine(groundCheckPoint.position, groundCheckPoint.position + Vector3.down * groundCheckRadius);
-            Gizmos.DrawLine(left, left + Vector3.down * groundCheckRadius);
-            Gizmos.DrawLine(right, right + Vector3.down * groundCheckRadius);
-        }
-    }
-
-    private void LookAt(){
         Vector2 input = move.ReadValue<Vector2>();
         if (input.sqrMagnitude > 0.01f)
         {
@@ -225,13 +208,25 @@ private void OnDash(InputAction.CallbackContext context){
         }
     }
 
-
     private void AnimatorController()
     {
         animator.SetFloat("Speed", rb.velocity.magnitude / maxSpeed);
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("verticalVelocity", rb.velocity.y);
-
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheckPoint != null)
+        {
+            Gizmos.color = Color.green;
+            Vector3 origin = groundCheckPoint.position;
+            Vector3 left = origin + groundCheckPoint.right * groundCheckRadius * 0.5f;
+            Vector3 right = origin - groundCheckPoint.right * groundCheckRadius * 0.5f;
+
+            Gizmos.DrawLine(origin, origin + Vector3.down * groundCheckRadius);
+            Gizmos.DrawLine(left, left + Vector3.down * groundCheckRadius);
+            Gizmos.DrawLine(right, right + Vector3.down * groundCheckRadius);
+        }
+    }
 }
