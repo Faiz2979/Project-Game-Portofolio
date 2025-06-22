@@ -87,19 +87,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnDash(InputAction.CallbackContext context)
+private void OnDash(InputAction.CallbackContext context){
+
+    Vector2 input = move.ReadValue<Vector2>();
+
+    // Cegah dash jika tidak ada input arah
+    if (input.sqrMagnitude < 0.1f)
     {
-        if (IsGrounded() && rb.velocity.magnitude > 0.1f)
-        {
-            Vector3 dashDirection = rb.velocity.normalized * dashSpeed; // Dash speed is defined by dashSpeed
-            rb.AddForce(dashDirection, ForceMode.Impulse);
-            Debug.Log("Dash performed!");
-        }
-        else
-        {
-            Debug.Log("Dash blocked: not grounded or insufficient velocity");
-        }
+        Debug.Log("Dash blocked: no movement input");
+        return;
     }
+
+    // Hitung arah dash dari input dan kamera
+    Vector3 dashDirection = input.x * GetCameraRight(playerCamera) + input.y * GetCameraForward(playerCamera);
+    Debug.Log("Dash direction: " + dashDirection);
+    dashDirection.Normalize();
+
+    // Terapkan gaya dash
+    rb.velocity = dashDirection * dashSpeed;
+    Debug.Log("Dash performed!");
+}
 
     private void FixedUpdate()
     {
@@ -129,6 +136,8 @@ public class PlayerController : MonoBehaviour
             rb.velocity = Vector3.zero;
         }
         LookAt();
+
+        rb.angularVelocity = Vector3.zero; // Prevent rotation from physics
     }
 
     private void OnJump(InputAction.CallbackContext context)
@@ -204,22 +213,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void LookAt()
-    {
-        Vector3 direction = rb.velocity;
-        direction.y = 0;
+    private void LookAt(){
+        Vector2 input = move.ReadValue<Vector2>();
+        if (input.sqrMagnitude > 0.01f)
+        {
+            Vector3 direction = input.x * GetCameraRight(playerCamera) + input.y * GetCameraForward(playerCamera);
+            direction.y = 0;
 
-        if (direction.sqrMagnitude > 0.01f && move.ReadValue<Vector2>().sqrMagnitude > 0.01f)
-        {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, Time.deltaTime * 10f);
-        }
-        else
-        {
-            // rb.rotation = Quaternion.Slerp(rb.rotation, Quaternion.identity, Time.deltaTime * 10f);
-            rb.angularVelocity = Vector3.zero;
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, Time.deltaTime * 10f));
         }
     }
+
 
     private void AnimatorController()
     {
