@@ -20,9 +20,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashDuration = 0.2f;
     [SerializeField] private float dashCooldown = 1f;
     [SerializeField] private float dashTimer = 0f;
+
+    [Header("Dash After Image Settings")]
+    [SerializeField] private float dashTrailRefreshRate = 0.1f;
+    [SerializeField] private float dashAfterImageLifetime = 0.5f;
+    [SerializeField] private Material dashAfterImageMaterial;
+
+    private SkinnedMeshRenderer[] skinMeshRenderer;
     private bool isDashing = false;
     private Vector3 forceDirection = Vector3.zero;
 
+    [Header("")]
     [Tooltip("Camera used to determine movement direction based on camera orientation.")]
     [SerializeField] private Camera playerCamera;
 
@@ -41,8 +49,7 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime;
     private float lastJumpTime = -Mathf.Infinity;
 
-    private void Awake()
-    {
+    private void Awake(){
         playerControls = new PlayerControls();
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
@@ -142,15 +149,50 @@ public class PlayerController : MonoBehaviour
         Vector3 dashDirection = input.x * GetCameraRight(playerCamera) + input.y * GetCameraForward(playerCamera);
         dashDirection.Normalize();
 
-        StartCoroutine(DashCoroutine(dashDirection));
+        StartCoroutine(DashCoroutine(dashDirection,dashDuration));
     }
 
-    private IEnumerator DashCoroutine(Vector3 direction)
-    {
+    private IEnumerator DashCoroutine(Vector3 direction, float duration){
         isDashing = true;
         rb.velocity = direction * dashSpeed;
-        Debug.Log("Dash performed!");
-        yield return new WaitForSeconds(dashDuration);
+
+        while (duration > 0)
+        {
+            duration -= dashTrailRefreshRate;
+            // Create a dash trail effect here if needed
+            if(skinMeshRenderer == null){
+                skinMeshRenderer = GetComponentsInChildren<SkinnedMeshRenderer>();
+            }
+
+            foreach (SkinnedMeshRenderer skin in skinMeshRenderer)
+            {
+                GameObject trail = new GameObject("DashTrail");
+
+                MeshFilter meshFilter = trail.AddComponent<MeshFilter>();
+                MeshRenderer meshRenderer = trail.AddComponent<MeshRenderer>();
+
+                trail.transform.position = skin.transform.position;
+                trail.transform.rotation = skin.transform.rotation;
+                meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                meshRenderer.receiveShadows = false;
+                
+                Mesh mesh = new Mesh();
+                skin.BakeMesh(mesh);
+                meshFilter.mesh = mesh;
+
+                if (dashAfterImageMaterial != null)
+                {
+                    meshRenderer.material = dashAfterImageMaterial;
+                }
+
+                Destroy(trail, dashAfterImageLifetime);
+            }
+
+
+            yield return new WaitForSeconds(dashTrailRefreshRate);
+        }
+        
+        yield return new WaitForSeconds(duration);
         isDashing = false;
     }
 
@@ -167,15 +209,12 @@ public class PlayerController : MonoBehaviour
         return centerHit || leftHit || rightHit;
     }
 
-    private void ToggleMouseLock(InputAction.CallbackContext context)
-    {
-        if (Cursor.lockState == CursorLockMode.Locked)
-        {
+    private void ToggleMouseLock(InputAction.CallbackContext context){
+        if (Cursor.lockState == CursorLockMode.Locked){
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        else
-        {
+        else {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -215,6 +254,9 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("verticalVelocity", rb.velocity.y);
     }
 
+
+
+
     private void OnDrawGizmosSelected()
     {
         if (groundCheckPoint != null)
@@ -229,4 +271,5 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawLine(right, right + Vector3.down * groundCheckRadius);
         }
     }
+
 }
