@@ -49,7 +49,8 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime;
     private float lastJumpTime = -Mathf.Infinity;
 
-    private void Awake(){
+    private void Awake()
+    {
         playerControls = new PlayerControls();
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
@@ -88,7 +89,8 @@ public class PlayerController : MonoBehaviour
         AnimatorController();
     }
 
-    private void FixedUpdate(){
+    private void FixedUpdate()
+    {
         Vector2 input = move.ReadValue<Vector2>();
         forceDirection = input.x * GetCameraRight(playerCamera) * moveSpeed;
         forceDirection += input.y * GetCameraForward(playerCamera) * moveSpeed;
@@ -139,6 +141,10 @@ public class PlayerController : MonoBehaviour
     {
         if (isDashing || dashTimer > 0) return;
         dashTimer = dashCooldown;
+        animator.Play("Dashing", 0, 0.6f); // Freeze di bagian tengah akhir dash
+        animator.speed = 0f;
+
+        GetComponent<FootstepSound>().DashSound();
         Vector2 input = move.ReadValue<Vector2>();
         if (input.sqrMagnitude < 0.1f)
         {
@@ -149,10 +155,11 @@ public class PlayerController : MonoBehaviour
         Vector3 dashDirection = input.x * GetCameraRight(playerCamera) + input.y * GetCameraForward(playerCamera);
         dashDirection.Normalize();
 
-        StartCoroutine(DashCoroutine(dashDirection,dashDuration));
+        StartCoroutine(DashCoroutine(dashDirection, dashDuration));
     }
 
-    private IEnumerator DashCoroutine(Vector3 direction, float duration){
+    private IEnumerator DashCoroutine(Vector3 direction, float duration)
+    {
         isDashing = true;
         rb.velocity = direction * dashSpeed;
 
@@ -160,7 +167,8 @@ public class PlayerController : MonoBehaviour
         {
             duration -= dashTrailRefreshRate;
             // Create a dash trail effect here if needed
-            if(skinMeshRenderer == null){
+            if (skinMeshRenderer == null)
+            {
                 skinMeshRenderer = GetComponentsInChildren<SkinnedMeshRenderer>();
             }
 
@@ -175,7 +183,7 @@ public class PlayerController : MonoBehaviour
                 trail.transform.rotation = skin.transform.rotation;
                 meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 meshRenderer.receiveShadows = false;
-                
+
                 Mesh mesh = new Mesh();
                 skin.BakeMesh(mesh);
                 meshFilter.mesh = mesh;
@@ -191,9 +199,11 @@ public class PlayerController : MonoBehaviour
 
             yield return new WaitForSeconds(dashTrailRefreshRate);
         }
-        
+
         yield return new WaitForSeconds(duration);
+        animator.speed = 1f;
         isDashing = false;
+
     }
 
     public bool IsGrounded()
@@ -209,12 +219,15 @@ public class PlayerController : MonoBehaviour
         return centerHit || leftHit || rightHit;
     }
 
-    private void ToggleMouseLock(InputAction.CallbackContext context){
-        if (Cursor.lockState == CursorLockMode.Locked){
+    private void ToggleMouseLock(InputAction.CallbackContext context)
+    {
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        else {
+        else
+        {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -252,8 +265,8 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Speed", rb.velocity.magnitude / maxSpeed);
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("verticalVelocity", rb.velocity.y);
+        animator.SetBool("isDashing", isDashing);
     }
-
 
 
 
