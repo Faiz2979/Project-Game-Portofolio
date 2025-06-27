@@ -9,7 +9,7 @@ public class LevelUIMapping : MonoBehaviour
     [Header("Prefab & Parent")]
     [SerializeField] private Transform levelParent;       // Tempat spawn prefab
     [SerializeField] private GameObject levelPrefabs;     // Prefab Level
-    [SerializeField] private float xOffset = 300f;        // Jarak antar level
+    [SerializeField] private float xOffset;        // Jarak antar level
 
     [Header("Manual References")]
     [SerializeField] private UIManagers uiManagers;

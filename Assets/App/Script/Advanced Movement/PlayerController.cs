@@ -141,16 +141,16 @@ public class PlayerController : MonoBehaviour
     {
         if (isDashing || dashTimer > 0) return;
         dashTimer = dashCooldown;
-        animator.Play("Dashing", 0, 0.6f); // Freeze di bagian tengah akhir dash
-        animator.speed = 0f;
 
-        GetComponent<FootstepSound>().DashSound();
         Vector2 input = move.ReadValue<Vector2>();
         if (input.sqrMagnitude < 0.1f)
         {
             Debug.Log("Dash blocked: no movement input");
             return;
         }
+        animator.Play("Dashing", 0, 0.6f); // Freeze di bagian tengah akhir dash
+        animator.speed = 0f;
+        GetComponent<FootstepSound>().DashSound();
 
         Vector3 dashDirection = input.x * GetCameraRight(playerCamera) + input.y * GetCameraForward(playerCamera);
         dashDirection.Normalize();
