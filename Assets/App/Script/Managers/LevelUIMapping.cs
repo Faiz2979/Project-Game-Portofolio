@@ -17,6 +17,9 @@ public class LevelUIMapping : MonoBehaviour
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private Texture defaultLevelClip;
 
+    [Header("Navigation Buttons")]
+    [SerializeField] private GameObject nextButton;
+    [SerializeField] private GameObject previousButton;
     [Header("UI Selected Level")]
     [SerializeField] private TMP_Text selectedLevelText;
 
@@ -109,7 +112,11 @@ public class LevelUIMapping : MonoBehaviour
         {
             selectedLevelText.text = "Selected: None";
         }
+        if (previousButton != null)
+            previousButton.SetActive(selectedLevelIndex > 0);
 
+        if (nextButton != null)
+            nextButton.SetActive(selectedLevelIndex < levelUIDataList.Count - 1);
         UpdateLevelPositions(); // Update posisi setelah berubah
     }
 

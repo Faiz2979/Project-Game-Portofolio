@@ -1493,6 +1493,8 @@ MonoBehaviour:
   levelSelectAnimator: {fileID: 1266978594}
   mainMenu: {fileID: 259319199}
   defaultLevelClip: {fileID: 8400000, guid: 9752fcbc1f050184f95eadeec75ed260, type: 2}
+  nextButton: {fileID: 796420177}
+  previousButton: {fileID: 1818750561}
   selectedLevelText: {fileID: 1857452725}
   levelUIDataList:
   - levelName: Locomotion
