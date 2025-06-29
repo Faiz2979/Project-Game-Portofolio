@@ -58,19 +58,19 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        playerControls.Player.Enable();
-        move = playerControls.Player.Move;
-        playerControls.Player.Jump.performed += OnJump;
-        playerControls.Player.ToggleMouseLock.performed += ToggleMouseLock;
-        playerControls.Player.Dash.performed += OnDash;
+        playerControls.Locomotion.Enable();
+        move = playerControls.Locomotion.Move;
+        playerControls.Locomotion.Jump.performed += OnJump;
+        playerControls.Locomotion.ToggleMouseLock.performed += ToggleMouseLock;
+        playerControls.Locomotion.Dash.performed += OnDash;
     }
 
     private void OnDisable()
     {
-        playerControls.Player.Disable();
-        playerControls.Player.Jump.performed -= OnJump;
-        playerControls.Player.Dash.performed -= OnDash;
-        playerControls.Player.ToggleMouseLock.performed -= ToggleMouseLock;
+        playerControls.Locomotion.Disable();
+        playerControls.Locomotion.Jump.performed -= OnJump;
+        playerControls.Locomotion.Dash.performed -= OnDash;
+        playerControls.Locomotion.ToggleMouseLock.performed -= ToggleMouseLock;
     }
 
     private void Update()

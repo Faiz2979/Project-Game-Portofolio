@@ -24,7 +24,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     ""name"": ""PlayerControls"",
     ""maps"": [
         {
-            ""name"": ""Player"",
+            ""name"": ""Locomotion"",
             ""id"": ""e6fcfc5d-1177-460f-b2ab-1785ddd68e4a"",
             ""actions"": [
                 {
@@ -202,6 +202,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""NavMesh"",
+            ""id"": ""f4ff0d17-ae8c-48b0-ae10-e1eef8ad8792"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Button"",
+                    ""id"": ""1c550412-6b0b-4386-81fb-8ca131246fd3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""8823c3c1-9582-40b0-9db2-8734da3288ff"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -218,16 +246,19 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     ]
 }");
-        // Player
-        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
-        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
-        m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
-        m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
-        m_Player_ToggleMouseLock = m_Player.FindAction("ToggleMouseLock", throwIfNotFound: true);
+        // Locomotion
+        m_Locomotion = asset.FindActionMap("Locomotion", throwIfNotFound: true);
+        m_Locomotion_Move = m_Locomotion.FindAction("Move", throwIfNotFound: true);
+        m_Locomotion_Jump = m_Locomotion.FindAction("Jump", throwIfNotFound: true);
+        m_Locomotion_Look = m_Locomotion.FindAction("Look", throwIfNotFound: true);
+        m_Locomotion_Dash = m_Locomotion.FindAction("Dash", throwIfNotFound: true);
+        m_Locomotion_ToggleMouseLock = m_Locomotion.FindAction("ToggleMouseLock", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_ToggleMenu = m_UI.FindAction("ToggleMenu", throwIfNotFound: true);
+        // NavMesh
+        m_NavMesh = asset.FindActionMap("NavMesh", throwIfNotFound: true);
+        m_NavMesh_Move = m_NavMesh.FindAction("Move", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -286,32 +317,32 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Player
-    private readonly InputActionMap m_Player;
-    private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_Move;
-    private readonly InputAction m_Player_Jump;
-    private readonly InputAction m_Player_Look;
-    private readonly InputAction m_Player_Dash;
-    private readonly InputAction m_Player_ToggleMouseLock;
-    public struct PlayerActions
+    // Locomotion
+    private readonly InputActionMap m_Locomotion;
+    private List<ILocomotionActions> m_LocomotionActionsCallbackInterfaces = new List<ILocomotionActions>();
+    private readonly InputAction m_Locomotion_Move;
+    private readonly InputAction m_Locomotion_Jump;
+    private readonly InputAction m_Locomotion_Look;
+    private readonly InputAction m_Locomotion_Dash;
+    private readonly InputAction m_Locomotion_ToggleMouseLock;
+    public struct LocomotionActions
     {
         private @PlayerControls m_Wrapper;
-        public PlayerActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Player_Move;
-        public InputAction @Jump => m_Wrapper.m_Player_Jump;
-        public InputAction @Look => m_Wrapper.m_Player_Look;
-        public InputAction @Dash => m_Wrapper.m_Player_Dash;
-        public InputAction @ToggleMouseLock => m_Wrapper.m_Player_ToggleMouseLock;
-        public InputActionMap Get() { return m_Wrapper.m_Player; }
+        public LocomotionActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_Locomotion_Move;
+        public InputAction @Jump => m_Wrapper.m_Locomotion_Jump;
+        public InputAction @Look => m_Wrapper.m_Locomotion_Look;
+        public InputAction @Dash => m_Wrapper.m_Locomotion_Dash;
+        public InputAction @ToggleMouseLock => m_Wrapper.m_Locomotion_ToggleMouseLock;
+        public InputActionMap Get() { return m_Wrapper.m_Locomotion; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
-        public void AddCallbacks(IPlayerActions instance)
+        public static implicit operator InputActionMap(LocomotionActions set) { return set.Get(); }
+        public void AddCallbacks(ILocomotionActions instance)
         {
-            if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_LocomotionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_LocomotionActionsCallbackInterfaces.Add(instance);
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
@@ -329,7 +360,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ToggleMouseLock.canceled += instance.OnToggleMouseLock;
         }
 
-        private void UnregisterCallbacks(IPlayerActions instance)
+        private void UnregisterCallbacks(ILocomotionActions instance)
         {
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
@@ -348,21 +379,21 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ToggleMouseLock.canceled -= instance.OnToggleMouseLock;
         }
 
-        public void RemoveCallbacks(IPlayerActions instance)
+        public void RemoveCallbacks(ILocomotionActions instance)
         {
-            if (m_Wrapper.m_PlayerActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_LocomotionActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IPlayerActions instance)
+        public void SetCallbacks(ILocomotionActions instance)
         {
-            foreach (var item in m_Wrapper.m_PlayerActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_LocomotionActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_PlayerActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_LocomotionActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public PlayerActions @Player => new PlayerActions(this);
+    public LocomotionActions @Locomotion => new LocomotionActions(this);
 
     // UI
     private readonly InputActionMap m_UI;
@@ -409,6 +440,52 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // NavMesh
+    private readonly InputActionMap m_NavMesh;
+    private List<INavMeshActions> m_NavMeshActionsCallbackInterfaces = new List<INavMeshActions>();
+    private readonly InputAction m_NavMesh_Move;
+    public struct NavMeshActions
+    {
+        private @PlayerControls m_Wrapper;
+        public NavMeshActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_NavMesh_Move;
+        public InputActionMap Get() { return m_Wrapper.m_NavMesh; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(NavMeshActions set) { return set.Get(); }
+        public void AddCallbacks(INavMeshActions instance)
+        {
+            if (instance == null || m_Wrapper.m_NavMeshActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_NavMeshActionsCallbackInterfaces.Add(instance);
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
+        }
+
+        private void UnregisterCallbacks(INavMeshActions instance)
+        {
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
+        }
+
+        public void RemoveCallbacks(INavMeshActions instance)
+        {
+            if (m_Wrapper.m_NavMeshActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(INavMeshActions instance)
+        {
+            foreach (var item in m_Wrapper.m_NavMeshActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_NavMeshActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public NavMeshActions @NavMesh => new NavMeshActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -418,7 +495,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_KeyboardSchemeIndex];
         }
     }
-    public interface IPlayerActions
+    public interface ILocomotionActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
@@ -429,5 +506,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IUIActions
     {
         void OnToggleMenu(InputAction.CallbackContext context);
+    }
+    public interface INavMeshActions
+    {
+        void OnMove(InputAction.CallbackContext context);
     }
 }
