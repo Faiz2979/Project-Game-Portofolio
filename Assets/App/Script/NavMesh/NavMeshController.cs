@@ -5,18 +5,26 @@ using UnityEngine.AI;
 using UnityEngine.InputSystem;
 public class NavMeshController : MonoBehaviour
 {
-public Camera mainCamera;
+    public Camera mainCamera;
     private PlayerControls playerInput;
     private Vector2 mousePos;
     public NavMeshAgent agent;
+    private Animator animator;
 
     void Awake()
     {
+
+        animator = GetComponent<Animator>();
         playerInput = new PlayerControls();
         if (mainCamera == null)
         {
             Debug.LogError("Main camera not found. Please assign a camera to the PlayerController.");
         }
+    }
+
+    void Update()
+    {
+        AnimationController();
     }
 
     void OnEnable()
@@ -41,5 +49,17 @@ public Camera mainCamera;
         {
             Debug.Log("No hit detected.");
         }
+    }
+
+    bool IsGrounded()
+    {
+        // Check if the agent is grounded
+        return Physics.Raycast(transform.position, Vector3.down, 1.1f);
+    }
+
+    void AnimationController()
+    {
+        animator.SetFloat("Speed", agent.velocity.magnitude);
+        animator.SetBool("isGrounded", IsGrounded());
     }
 }

@@ -176,6 +176,238 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""Combats"",
+            ""id"": ""1981f675-1872-4a96-9a26-56aff2d1fac4"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""5b7c0fda-e221-4776-a269-88c904c842a2"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""70dee900-43db-4288-a1b2-78a173618146"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""48ce30eb-706b-4665-8fa1-e5b9db31167b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Roll"",
+                    ""type"": ""Button"",
+                    ""id"": ""002b7abe-c2ad-47c2-a337-9b81f6b53aba"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Draw Weapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""0509c75c-38ca-4b44-991e-9d36e402a9f7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleMouseLock"",
+                    ""type"": ""Button"",
+                    ""id"": ""291392ad-eb52-4fe8-8785-39590574f5f7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""867c6262-6b4b-4b66-8e88-92247124ff2d"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Normal Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""362ae435-8d98-4f94-84cf-f4dfeac069e8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Heavy Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""60867f8d-3145-4b76-88b6-cbfe50473bee"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""a6837db0-f4c0-42f6-947d-2b0285eabad5"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""45840c18-3b67-4707-a338-8be94780614f"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""43d5b0e0-cd99-4348-9b18-29ed96f7fd89"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""4d0aff24-a33b-43b6-b18d-acee51876813"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""981ff624-ec25-486d-81c6-0b3b937ae927"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dd5042ff-c1ff-458b-bcb1-4b6ccb45bd99"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8d58c5cd-7305-4d15-8614-f281c6e8b90d"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""62e3b614-bd9d-4ee7-94a1-93b1f03fa30e"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92993cb3-edbc-4a99-871f-5859748aa90f"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleMouseLock"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""37624b56-4bad-4113-85a4-76c6fe2cbb7d"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Draw Weapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88543781-952f-48c9-8202-8f72a396c31c"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0165ada8-c32b-4556-8368-043511df5c2c"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Normal Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7a566a3f-00b2-4beb-a5ed-6084d559339b"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Heavy Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""UI"",
             ""id"": ""b4eef852-e4b8-4845-bad8-37c8b42fabfd"",
             ""actions"": [
@@ -253,6 +485,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Locomotion_Look = m_Locomotion.FindAction("Look", throwIfNotFound: true);
         m_Locomotion_Dash = m_Locomotion.FindAction("Dash", throwIfNotFound: true);
         m_Locomotion_ToggleMouseLock = m_Locomotion.FindAction("ToggleMouseLock", throwIfNotFound: true);
+        // Combats
+        m_Combats = asset.FindActionMap("Combats", throwIfNotFound: true);
+        m_Combats_Move = m_Combats.FindAction("Move", throwIfNotFound: true);
+        m_Combats_Jump = m_Combats.FindAction("Jump", throwIfNotFound: true);
+        m_Combats_Sprint = m_Combats.FindAction("Sprint", throwIfNotFound: true);
+        m_Combats_Roll = m_Combats.FindAction("Roll", throwIfNotFound: true);
+        m_Combats_DrawWeapon = m_Combats.FindAction("Draw Weapon", throwIfNotFound: true);
+        m_Combats_ToggleMouseLock = m_Combats.FindAction("ToggleMouseLock", throwIfNotFound: true);
+        m_Combats_Look = m_Combats.FindAction("Look", throwIfNotFound: true);
+        m_Combats_NormalAttack = m_Combats.FindAction("Normal Attack", throwIfNotFound: true);
+        m_Combats_HeavyAttack = m_Combats.FindAction("Heavy Attack", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_ToggleMenu = m_UI.FindAction("ToggleMenu", throwIfNotFound: true);
@@ -395,6 +638,116 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     }
     public LocomotionActions @Locomotion => new LocomotionActions(this);
 
+    // Combats
+    private readonly InputActionMap m_Combats;
+    private List<ICombatsActions> m_CombatsActionsCallbackInterfaces = new List<ICombatsActions>();
+    private readonly InputAction m_Combats_Move;
+    private readonly InputAction m_Combats_Jump;
+    private readonly InputAction m_Combats_Sprint;
+    private readonly InputAction m_Combats_Roll;
+    private readonly InputAction m_Combats_DrawWeapon;
+    private readonly InputAction m_Combats_ToggleMouseLock;
+    private readonly InputAction m_Combats_Look;
+    private readonly InputAction m_Combats_NormalAttack;
+    private readonly InputAction m_Combats_HeavyAttack;
+    public struct CombatsActions
+    {
+        private @PlayerControls m_Wrapper;
+        public CombatsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_Combats_Move;
+        public InputAction @Jump => m_Wrapper.m_Combats_Jump;
+        public InputAction @Sprint => m_Wrapper.m_Combats_Sprint;
+        public InputAction @Roll => m_Wrapper.m_Combats_Roll;
+        public InputAction @DrawWeapon => m_Wrapper.m_Combats_DrawWeapon;
+        public InputAction @ToggleMouseLock => m_Wrapper.m_Combats_ToggleMouseLock;
+        public InputAction @Look => m_Wrapper.m_Combats_Look;
+        public InputAction @NormalAttack => m_Wrapper.m_Combats_NormalAttack;
+        public InputAction @HeavyAttack => m_Wrapper.m_Combats_HeavyAttack;
+        public InputActionMap Get() { return m_Wrapper.m_Combats; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CombatsActions set) { return set.Get(); }
+        public void AddCallbacks(ICombatsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CombatsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CombatsActionsCallbackInterfaces.Add(instance);
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
+            @Roll.started += instance.OnRoll;
+            @Roll.performed += instance.OnRoll;
+            @Roll.canceled += instance.OnRoll;
+            @DrawWeapon.started += instance.OnDrawWeapon;
+            @DrawWeapon.performed += instance.OnDrawWeapon;
+            @DrawWeapon.canceled += instance.OnDrawWeapon;
+            @ToggleMouseLock.started += instance.OnToggleMouseLock;
+            @ToggleMouseLock.performed += instance.OnToggleMouseLock;
+            @ToggleMouseLock.canceled += instance.OnToggleMouseLock;
+            @Look.started += instance.OnLook;
+            @Look.performed += instance.OnLook;
+            @Look.canceled += instance.OnLook;
+            @NormalAttack.started += instance.OnNormalAttack;
+            @NormalAttack.performed += instance.OnNormalAttack;
+            @NormalAttack.canceled += instance.OnNormalAttack;
+            @HeavyAttack.started += instance.OnHeavyAttack;
+            @HeavyAttack.performed += instance.OnHeavyAttack;
+            @HeavyAttack.canceled += instance.OnHeavyAttack;
+        }
+
+        private void UnregisterCallbacks(ICombatsActions instance)
+        {
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
+            @Roll.started -= instance.OnRoll;
+            @Roll.performed -= instance.OnRoll;
+            @Roll.canceled -= instance.OnRoll;
+            @DrawWeapon.started -= instance.OnDrawWeapon;
+            @DrawWeapon.performed -= instance.OnDrawWeapon;
+            @DrawWeapon.canceled -= instance.OnDrawWeapon;
+            @ToggleMouseLock.started -= instance.OnToggleMouseLock;
+            @ToggleMouseLock.performed -= instance.OnToggleMouseLock;
+            @ToggleMouseLock.canceled -= instance.OnToggleMouseLock;
+            @Look.started -= instance.OnLook;
+            @Look.performed -= instance.OnLook;
+            @Look.canceled -= instance.OnLook;
+            @NormalAttack.started -= instance.OnNormalAttack;
+            @NormalAttack.performed -= instance.OnNormalAttack;
+            @NormalAttack.canceled -= instance.OnNormalAttack;
+            @HeavyAttack.started -= instance.OnHeavyAttack;
+            @HeavyAttack.performed -= instance.OnHeavyAttack;
+            @HeavyAttack.canceled -= instance.OnHeavyAttack;
+        }
+
+        public void RemoveCallbacks(ICombatsActions instance)
+        {
+            if (m_Wrapper.m_CombatsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICombatsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CombatsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CombatsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CombatsActions @Combats => new CombatsActions(this);
+
     // UI
     private readonly InputActionMap m_UI;
     private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
@@ -502,6 +855,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnToggleMouseLock(InputAction.CallbackContext context);
+    }
+    public interface ICombatsActions
+    {
+        void OnMove(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
+        void OnRoll(InputAction.CallbackContext context);
+        void OnDrawWeapon(InputAction.CallbackContext context);
+        void OnToggleMouseLock(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
+        void OnNormalAttack(InputAction.CallbackContext context);
+        void OnHeavyAttack(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
