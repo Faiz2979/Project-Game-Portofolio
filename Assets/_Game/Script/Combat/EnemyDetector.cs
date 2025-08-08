@@ -12,6 +12,7 @@ public class EnemyDetector : MonoBehaviour
     [Space(10)]
     [Header("Detected Enemies")]
     [SerializeField] List<GameObject> enemies = new List<GameObject>();
+    public GameObject TargettedEnemy;
 
     private WaitForSeconds wait;
 
@@ -44,6 +45,7 @@ public class EnemyDetector : MonoBehaviour
                 Debug.Log("Detected new enemy: " + hit.name);
             }
         }
+
     }
 
     private void OnDrawGizmos()
@@ -53,7 +55,12 @@ public class EnemyDetector : MonoBehaviour
 
         foreach (var enemy in enemies)
         {
-            if (enemy == null) continue;
+            if (enemy == null)
+            {
+                Gizmos.color = Color.red;
+                continue;
+            }
+            ;
 
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, detectionRadius);
@@ -66,5 +73,10 @@ public class EnemyDetector : MonoBehaviour
                 Gizmos.DrawWireSphere(enemyPos, debugSphere);
             }
         }
+    }
+
+    public void SetTargettedEnemy(GameObject enemy)
+    {
+        TargettedEnemy = enemy;
     }
 }
